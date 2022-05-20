@@ -21,7 +21,7 @@ type Interface interface {
 	Validate() (bool, error)
 	// Name of checker
 	Name() string
-	// Metadata return the check's help text.
+	// Metadata return the checker's Metadata
 	Metadata() Metadata
 }
 

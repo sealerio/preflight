@@ -17,13 +17,13 @@ package checker
 import "github.com/pkg/errors"
 
 // Register all checks
-//var memNumCheck Interface = &MemCheck{}
+var memNumCheck Interface = &MemCheck{}
 var cpuNumCheck Interface = &NumCPUCheck{}
 var fileExistingCheck Interface = &FileExistingCheck{}
 var portInuseCheck Interface = &PortCheck{}
 
 var nameToChecksMap = map[string]Interface{
-//	memNumCheck.Name():       memNumCheck,
+	memNumCheck.Name():       memNumCheck,
 	cpuNumCheck.Name():       cpuNumCheck,
 	fileExistingCheck.Name(): fileExistingCheck,
 	portInuseCheck.Name():    portInuseCheck,
