@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package formatter
+package results
 
-import "preflight/checker"
-
-type Descriptor struct {
-	CheckerName  string            `json:"checker_name"`
-	IsPassed     bool              `json:"is_passed,omitempty"`
-	ErrorMessage string            `json:"error_message,omitempty"`
-	Metadata     *checker.Metadata `json:"metadata,omitempty"`
+type FormatOptions struct {
+	// Ignores checker Validate result by checker type,default is lowercase.
+	Ignores []string
 }
 
-// Response used to format for show check report.
-type Response struct {
-	Passed []Descriptor `json:"passed,omitempty"`
-	Failed []Descriptor `json:"failed,omitempty"`
-	Errors []Descriptor `json:"errors,omitempty"`
+type Option func(*FormatOptions)
+
+func WithIgnores(ignores []string) Option {
+	return func(o *FormatOptions) {
+		o.Ignores = ignores
+	}
+}
+
+var defaultFormatOptions = FormatOptions{
+	Ignores: []string{},
 }

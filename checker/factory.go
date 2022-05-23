@@ -14,22 +14,28 @@
 
 package checker
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+)
 
 // Register all checks
-//var memNumCheck Interface = &MemCheck{}
+var memNumCheck Interface = &MemCheck{}
 var cpuNumCheck Interface = &NumCPUCheck{}
 var fileExistingCheck Interface = &FileExistingCheck{}
 var portInuseCheck Interface = &PortCheck{}
 
 var nameToChecksMap = map[string]Interface{
-//	memNumCheck.Name():       memNumCheck,
-	cpuNumCheck.Name():       cpuNumCheck,
-	fileExistingCheck.Name(): fileExistingCheck,
-	portInuseCheck.Name():    portInuseCheck,
+	memNumCheck.Type():       memNumCheck,
+	cpuNumCheck.Type():       cpuNumCheck,
+	fileExistingCheck.Type(): fileExistingCheck,
+	portInuseCheck.Type():    portInuseCheck,
 }
 
-func GetAllCheckers() []string {
+func GetAllCheckers() map[string]Interface {
+	return nameToChecksMap
+}
+
+func GetAllCheckerTypes() []string {
 	all := make([]string, len(nameToChecksMap))
 	for k := range nameToChecksMap {
 		all = append(all, k)
@@ -37,9 +43,9 @@ func GetAllCheckers() []string {
 	return all
 }
 
-func GetCheckersByName(checkName string) (Interface, error) {
-	if check, exists := nameToChecksMap[checkName]; exists {
+func GetCheckersByType(checkType string) (Interface, error) {
+	if check, exists := nameToChecksMap[checkType]; exists {
 		return check, nil
 	}
-	return nil, errors.Errorf("checker %s not found", checkName)
+	return nil, errors.Errorf("checker %s not found", checkType)
 }
