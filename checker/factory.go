@@ -19,13 +19,13 @@ import (
 )
 
 // Register all checks
-//var memNumCheck Interface = &MemCheck{}
+var memNumCheck Interface = &MemCheck{}
 var cpuNumCheck Interface = &NumCPUCheck{}
 var fileExistingCheck Interface = &FileExistingCheck{}
 var portInuseCheck Interface = &PortCheck{}
 
 var nameToChecksMap = map[string]Interface{
-	//	memNumCheck.Type():       memNumCheck,
+	memNumCheck.Type():       memNumCheck,
 	cpuNumCheck.Type():       cpuNumCheck,
 	fileExistingCheck.Type(): fileExistingCheck,
 	portInuseCheck.Type():    portInuseCheck,
