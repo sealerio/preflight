@@ -15,16 +15,23 @@
 package checker
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
 	"os"
+	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type FileExistingCheck struct {
 	Path string
 }
 
-func (f FileExistingCheck) Name() string {
-	return "FileExistingCheck"
+func (f FileExistingCheck) Type() string {
+	return "FileExisting"
+}
+
+func (f FileExistingCheck) PrettyName() string {
+	return fmt.Sprintf("%s:%s", strings.ToLower(f.Type()), f.Path)
 }
 
 func (FileExistingCheck) Metadata() Metadata {

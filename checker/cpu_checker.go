@@ -15,8 +15,11 @@
 package checker
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
 	"runtime"
+	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // NumCPUCheck checks if current number of CPUs is not less than required
@@ -24,8 +27,12 @@ type NumCPUCheck struct {
 	NumCPU int
 }
 
-func (NumCPUCheck) Name() string {
+func (c NumCPUCheck) Type() string {
 	return "CPU"
+}
+
+func (c NumCPUCheck) PrettyName() string {
+	return fmt.Sprintf("%s:%d", strings.ToLower(c.Type()), c.NumCPU)
 }
 
 func (NumCPUCheck) Metadata() Metadata {

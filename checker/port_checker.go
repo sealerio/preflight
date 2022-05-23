@@ -16,6 +16,8 @@ package checker
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/pkg/errors"
 
 	"net"
@@ -25,8 +27,12 @@ type PortCheck struct {
 	Port int
 }
 
-func (p PortCheck) Name() string {
+func (p PortCheck) Type() string {
 	return "Port"
+}
+
+func (p PortCheck) PrettyName() string {
+	return fmt.Sprintf("%s:%d", strings.ToLower(p.Type()), p.Port)
 }
 
 func (PortCheck) Metadata() Metadata {
@@ -42,7 +48,7 @@ func (PortCheck) Metadata() Metadata {
 func (p PortCheck) Validate() (bool, error) {
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", p.Port))
 	if err != nil {
-		return false, errors.Errorf("Port %d is in use,%v", p.Port,err)
+		return false, errors.Errorf("Port %d is in use,%v", p.Port, err)
 	}
 	if ln != nil {
 		if err = ln.Close(); err != nil {

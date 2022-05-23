@@ -15,28 +15,77 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"preflight/checker"
-	"preflight/formatter"
+	"preflight/results"
 	"preflight/runner"
+	"strings"
 	"testing"
 )
 
+func TestNewCheckRunnerList(t *testing.T) {
+	type ListResponse struct {
+		Type     string
+		Name     string
+		Metadata checker.Metadata
+	}
+
+	var resp []ListResponse
+
+	for types, c := range checker.GetAllCheckers() {
+		resp = append(resp, ListResponse{
+			Name:     fmt.Sprintf("%s:%s", strings.ToLower(types), "${arg}"),
+			Type:     types,
+			Metadata: c.Metadata(),
+		})
+	}
+
+	responseJSON, err := json.MarshalIndent(resp, "", "    ")
+	if err != nil {
+		t.Errorf("format json failed:%v\n", err)
+	}
+
+	fmt.Println(string(responseJSON))
+}
 func TestNewCheckRunner(t *testing.T) {
 	list := []checker.Interface{
 		checker.PortCheck{Port: 34442424},
 		checker.NumCPUCheck{NumCPU: 2},
 		checker.FileExistingCheck{Path: "/code/preflight/cmd/main.go"},
+		checker.PortCheck{Port: 90},
 	}
-	checkers, err := runner.NewCheckRunner(list)
+	r, err := runner.NewCheckRunnerByList(list)
 	if err != nil {
 		t.Errorf("failed to init runner err: %s", err)
 	}
-	data, err := formatter.FormatResults(checkers.Execute())
+	resp := results.NewDefaultFormatter(r.Execute()).Format(results.WithIgnores([]string{"Port", "FileExisting"}))
 
+	responseJSON, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
-		t.Errorf("formatter err: %s", err)
+		t.Errorf("format json failed:%v\n", err)
 	}
 
-	fmt.Println(string(data))
+	fmt.Println(string(responseJSON))
+}
+
+func TestNewCheckRunnerWithIgnore(t *testing.T) {
+	list := []checker.Interface{
+		checker.PortCheck{Port: 34442424},
+		checker.NumCPUCheck{NumCPU: 2},
+		checker.FileExistingCheck{Path: "/code/preflight/cmd/main.go"},
+		checker.PortCheck{Port: 90},
+	}
+	r, err := runner.NewCheckRunnerByList(list)
+	if err != nil {
+		t.Errorf("failed to init runner err: %s", err)
+	}
+	resp := results.NewDefaultFormatter(r.Execute()).Format(results.WithIgnores([]string{"Port", "FileExisting"}))
+
+	responseJSON, err := json.MarshalIndent(resp, "", "    ")
+	if err != nil {
+		t.Errorf("format json failed:%v\n", err)
+	}
+
+	fmt.Println(string(responseJSON))
 }

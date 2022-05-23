@@ -18,6 +18,8 @@
 package checker
 
 import (
+	"fmt"
+	"strings"
 	"syscall"
 
 	"github.com/pkg/errors"
@@ -27,8 +29,12 @@ type MemCheck struct {
 	Mem uint64
 }
 
-func (m MemCheck) Name() string {
-	return "Mem"
+func (m MemCheck) Type() string {
+	return "Memory"
+}
+
+func (m MemCheck) PrettyName() string {
+	return fmt.Sprintf("%s:%d", strings.ToLower(m.Type()), m.Mem)
 }
 
 func (MemCheck) Metadata() Metadata {
