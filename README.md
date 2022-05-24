@@ -35,6 +35,28 @@ preflight run --not-tolerable
 
 ### preflight result show
 
+list build-in checkers
+
+```shell
+[root@iZbp10a38f9badoq9dpp1eZ tmp]# preflight list
++---------------------+--------------+-------+--------------------------------+
+|    CHECKER NAME     | CHECKER TYPE | LEVEL |          DESCRIPTION           |
++---------------------+--------------+-------+--------------------------------+
+| memory:${arg}       | memory       | fatal | Check the number of megabytes  |
+|                     |              |       | of memory required             |
+| cpu:${arg}          | cpu          | fatal | Check number of CPUs required  |
+| fileexisting:${arg} | fileexisting | warn  | Check the given file does is   |
+|                     |              |       | already exist                  |
+| port:${arg}         | port         | fatal | Check the the port is          |
+|                     |              |       | available                      |
+| os:${arg}           | os           | panic | Check host operating system    |
+|                     |              |       | info                           |
++---------------------+--------------+-------+--------------------------------+
+
+```
+
+execute build-in runner
+
 ```shell
 [root@iZbp10a38f9badoq9dpp1eZ tmp]# preflight run
 {
