@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 	"preflight/checker"
-	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -47,7 +46,7 @@ var listCmd = &cobra.Command{
 
 		for types, checker := range checker.GetAllCheckers() {
 			resp = append(resp, ListResponse{
-				Name:     fmt.Sprintf("%s:%s", strings.ToLower(types), "${arg}"),
+				Name:     fmt.Sprintf("%s:%s", types, "${arg}"),
 				Type:     types,
 				Metadata: checker.Metadata(),
 			})

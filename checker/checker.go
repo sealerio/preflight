@@ -19,7 +19,7 @@ type Interface interface {
 	// Validate the asset value for the checker.
 	// if validate not pass or encounter error,will return check error.
 	Validate() (bool, error)
-	// Type unique checker type,used to do filter
+	// Type unique checker type,used to do filter.
 	Type() string
 	// PrettyName of checker
 	PrettyName() string

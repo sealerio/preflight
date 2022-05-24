@@ -23,12 +23,14 @@ var memNumCheck Interface = &MemCheck{}
 var cpuNumCheck Interface = &NumCPUCheck{}
 var fileExistingCheck Interface = &FileExistingCheck{}
 var portInuseCheck Interface = &PortCheck{}
+var osCheck Interface = &OsCheck{}
 
 var nameToChecksMap = map[string]Interface{
 	memNumCheck.Type():       memNumCheck,
 	cpuNumCheck.Type():       cpuNumCheck,
 	fileExistingCheck.Type(): fileExistingCheck,
 	portInuseCheck.Type():    portInuseCheck,
+	osCheck.Type():           osCheck,
 }
 
 func GetAllCheckers() map[string]Interface {

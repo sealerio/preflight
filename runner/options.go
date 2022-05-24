@@ -14,20 +14,37 @@
 
 package runner
 
+import "strings"
+
 type RunOptions struct {
 	// Skips checker Validate by checker type,default is lowercase.
 	Skips []string
+	// IsTolerable return immediately when an error is reported.
+	NotTolerable bool
 }
 
 // Option configures a runner list
 type Option func(*RunOptions)
 
 var defaultRunOptions = RunOptions{
-	Skips: []string{},
+	Skips:        []string{},
+	NotTolerable: false,
 }
 
 func WithSkips(skips []string) Option {
 	return func(o *RunOptions) {
-		o.Skips = skips
+		var s []string
+		if len(skips) > 0 {
+			for _, skip := range skips {
+				s = append(s, strings.ToLower(skip))
+			}
+		}
+		o.Skips = s
+	}
+}
+
+func WithToleration(it bool) Option {
+	return func(o *RunOptions) {
+		o.NotTolerable = it
 	}
 }

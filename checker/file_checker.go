@@ -27,11 +27,11 @@ type FileExistingCheck struct {
 }
 
 func (f FileExistingCheck) Type() string {
-	return "FileExisting"
+	return strings.ToLower("FileExisting")
 }
 
 func (f FileExistingCheck) PrettyName() string {
-	return fmt.Sprintf("%s:%s", strings.ToLower(f.Type()), f.Path)
+	return fmt.Sprintf("%s:%s", f.Type(), f.Path)
 }
 
 func (FileExistingCheck) Metadata() Metadata {

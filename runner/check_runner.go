@@ -16,23 +16,33 @@ package runner
 
 import (
 	"preflight/checker"
-	"preflight/results"
+	"preflight/result"
 
 	"github.com/pkg/errors"
 )
 
 type CheckRunner struct {
 	Checks  []checker.Interface
-	Results results.RunnerResult
+	Results result.RunnerResult
+	Options RunOptions
 }
 
 // Execute checker validate and dispatch to different results
-func (c *CheckRunner) Execute() results.RunnerResult {
+func (c *CheckRunner) Execute() result.RunnerResult {
 	for _, check := range c.Checks {
+		// if not tolerance failed checker,return immediately
+		if c.Options.NotTolerable && len(c.Results.Failed) > 0 {
+			return c.Results
+		}
+
+		if !NotIn(check.Type(), c.Options.Skips) {
+			continue
+		}
+
 		// run the validation
 		passed, err := check.Validate()
 		if err != nil {
-			c.Results.Failed = append(c.Results.Failed, results.CheckResult{
+			c.Results.Failed = append(c.Results.Failed, result.CheckResult{
 				Checker:      check,
 				Passed:       false,
 				ErrorMessage: err.Error(),
@@ -40,7 +50,7 @@ func (c *CheckRunner) Execute() results.RunnerResult {
 			continue
 		}
 
-		c.Results.Passed = append(c.Results.Passed, results.CheckResult{
+		c.Results.Passed = append(c.Results.Passed, result.CheckResult{
 			Checker: check,
 			Passed:  passed,
 		})
@@ -49,13 +59,20 @@ func (c *CheckRunner) Execute() results.RunnerResult {
 	return c.Results
 }
 
-// NewCheckRunnerByList select Checklist via build-in check map.
+// NewCheckRunner select Checklist via build-in check map.
 // if len(Checklist)==0 ,return not specified error.
-func NewCheckRunnerByList(checkList []checker.Interface) (Runner, error) {
+func NewCheckRunner(checkList []checker.Interface, opts ...Option) (Runner, error) {
 	if len(checkList) == 0 {
 		return nil, errors.New("Checklist could not be nil")
 	}
+
+	options := defaultRunOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
+
 	return &CheckRunner{
-		Checks: checkList,
+		Checks:  checkList,
+		Options: options,
 	}, nil
 }

@@ -28,11 +28,11 @@ type NumCPUCheck struct {
 }
 
 func (c NumCPUCheck) Type() string {
-	return "CPU"
+	return strings.ToLower("CPU")
 }
 
 func (c NumCPUCheck) PrettyName() string {
-	return fmt.Sprintf("%s:%d", strings.ToLower(c.Type()), c.NumCPU)
+	return fmt.Sprintf("%s:%d", c.Type(), c.NumCPU)
 }
 
 func (NumCPUCheck) Metadata() Metadata {

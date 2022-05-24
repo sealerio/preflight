@@ -30,11 +30,11 @@ type MemCheck struct {
 }
 
 func (m MemCheck) Type() string {
-	return "Memory"
+	return strings.ToLower("Memory")
 }
 
 func (m MemCheck) PrettyName() string {
-	return fmt.Sprintf("%s:%d", strings.ToLower(m.Type()), m.Mem)
+	return fmt.Sprintf("%s:%d", m.Type(), m.Mem)
 }
 
 func (MemCheck) Metadata() Metadata {
@@ -54,7 +54,7 @@ func (m MemCheck) Validate() (bool, error) {
 	}
 
 	// Total holds the total usable memory. Unit holds the size of a memory unit in bytes. Multiply them and convert to MB
-	actual := uint64(info.Totalram) * uint64(info.Unit) / 1024 / 1024
+	actual := info.Totalram * uint64(info.Unit) / 1024 / 1024
 	if actual < m.Mem {
 		return false, errors.Errorf("the system RAM (%d MB) is less than the minimum %d MB", actual, m.Mem)
 	}

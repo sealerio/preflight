@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"preflight/checker"
-	"preflight/results"
+	"preflight/result"
 	"preflight/runner"
 	"strings"
 	"testing"
@@ -55,11 +55,11 @@ func TestNewCheckRunner(t *testing.T) {
 		checker.FileExistingCheck{Path: "/code/preflight/cmd/main.go"},
 		checker.PortCheck{Port: 90},
 	}
-	r, err := runner.NewCheckRunnerByList(list)
+	r, err := runner.NewCheckRunner(list)
 	if err != nil {
 		t.Errorf("failed to init runner err: %s", err)
 	}
-	resp := results.NewDefaultFormatter(r.Execute()).Format(results.WithIgnores([]string{"Port", "FileExisting"}))
+	resp := result.NewDefaultFormatter(r.Execute()).Format(result.WithIgnores([]string{"Port", "FileExisting"}))
 
 	responseJSON, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
@@ -76,11 +76,11 @@ func TestNewCheckRunnerWithIgnore(t *testing.T) {
 		checker.FileExistingCheck{Path: "/code/preflight/cmd/main.go"},
 		checker.PortCheck{Port: 90},
 	}
-	r, err := runner.NewCheckRunnerByList(list)
+	r, err := runner.NewCheckRunner(list)
 	if err != nil {
 		t.Errorf("failed to init runner err: %s", err)
 	}
-	resp := results.NewDefaultFormatter(r.Execute()).Format(results.WithIgnores([]string{"Port", "FileExisting"}))
+	resp := result.NewDefaultFormatter(r.Execute()).Format(result.WithIgnores([]string{"Port", "FileExisting"}))
 
 	responseJSON, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {

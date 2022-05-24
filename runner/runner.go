@@ -15,18 +15,14 @@
 package runner
 
 import (
-	"preflight/results"
+	"preflight/result"
 )
 
 type Runner interface {
 	// Execute all given Checkers.
-	Execute() results.RunnerResult
+	Execute() result.RunnerResult
 }
 
-func NewRunner(opts ...Option) (Runner, error) {
-	options := defaultRunOptions
-	for _, opt := range opts {
-		opt(&options)
-	}
-	return NewCheckRunnerByList(BuildInitCheckers(options.Skips))
+func NewDefaultRunner(opts ...Option) (Runner, error) {
+	return NewCheckRunner(BuildInitCheckers(), opts...)
 }

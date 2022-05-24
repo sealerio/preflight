@@ -28,11 +28,11 @@ type PortCheck struct {
 }
 
 func (p PortCheck) Type() string {
-	return "Port"
+	return strings.ToLower("Port")
 }
 
 func (p PortCheck) PrettyName() string {
-	return fmt.Sprintf("%s:%d", strings.ToLower(p.Type()), p.Port)
+	return fmt.Sprintf("%s:%d", p.Type(), p.Port)
 }
 
 func (PortCheck) Metadata() Metadata {

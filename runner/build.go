@@ -16,21 +16,17 @@ package runner
 
 import (
 	"preflight/checker"
-	"strings"
 )
 
-func BuildInitCheckers(skips []string) []checker.Interface {
-	var checkList []checker.Interface
-	defaultCheckers := []checker.Interface{
-		checker.PortCheck{Port: 22},
-		checker.FileExistingCheck{Path: ""},
+func BuildInitCheckers() []checker.Interface {
+	return []checker.Interface{
+		checker.PortCheck{Port: 6443},
 		checker.NumCPUCheck{NumCPU: 2},
+		checker.MemCheck{Mem: 1700},
+		checker.OsCheck{
+			OSType:         "linux",
+			OSDistribution: []string{"ubuntu", "centos"},
+			// Requires 3.10+, or newer
+			KernelVersions: []string{`^3\.[1-9][0-9].*$`, `^([4-9]|[1-9][0-9]+)\.([0-9]+)\.([0-9]+).*$`}},
 	}
-
-	for _, c := range defaultCheckers {
-		if NotIn(strings.ToLower(c.Type()), skips) {
-			checkList = append(checkList, c)
-		}
-	}
-	return checkList
 }

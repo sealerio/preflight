@@ -17,7 +17,7 @@ package app
 import (
 	"encoding/json"
 	"fmt"
-	"preflight/results"
+	"preflight/result"
 	"preflight/runner"
 
 	"github.com/pkg/errors"
@@ -25,10 +25,11 @@ import (
 )
 
 type RunArgs struct {
-	Skip        []string
-	Ignore      []string
-	CheckerType string
-	CheckerArgs string
+	Skip         []string
+	Ignore       []string
+	NotTolerable bool
+	CheckerType  string
+	CheckerArgs  string
 }
 
 var runArgs *RunArgs
@@ -42,12 +43,12 @@ var runCmd = &cobra.Command{
 }
 
 func runPreflight(cmd *cobra.Command, args []string) error {
-	r, err := runner.NewRunner(runner.WithSkips(runArgs.Skip))
+	r, err := runner.NewDefaultRunner(runner.WithSkips(runArgs.Skip), runner.WithToleration(runArgs.NotTolerable))
 	if err != nil {
 		return errors.Wrap(err, "failed to init runner")
 	}
 
-	resp := results.NewDefaultFormatter(r.Execute()).Format(results.WithIgnores(runArgs.Ignore))
+	resp := result.NewDefaultFormatter(r.Execute()).Format(result.WithIgnores(runArgs.Ignore))
 
 	responseJSON, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
@@ -63,7 +64,8 @@ func init() {
 	runArgs = &RunArgs{}
 	runCmd.Flags().StringVarP(&runArgs.CheckerType, "checker", "c", "", "specify checker type")
 	runCmd.Flags().StringVar(&runArgs.CheckerArgs, "args", "", "specify checker args when you want run specify checker")
+	runCmd.Flags().BoolVar(&runArgs.NotTolerable, "not-tolerable", false, "specify runner option whether return immediately when an error is reported.")
 	runCmd.Flags().StringSliceVar(&runArgs.Skip, "skip", []string{}, "run all checkers expect this checker")
-	runCmd.Flags().StringSliceVar(&runArgs.Ignore, "ignore-errors", []string{}, "run all checkers ignore this checker error")
+	runCmd.Flags().StringSliceVar(&runArgs.Ignore, "ignore-errors", []string{}, "specify checker type and run all checkers ignore this checker error")
 	rootCmd.AddCommand(runCmd)
 }
